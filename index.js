@@ -8,6 +8,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const Game = require('./src/game.js')
+const sequelize = require('./server/conf.js')
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
 app.get('/game',(req, res, next) => {
   Game.join(req.query.token)
