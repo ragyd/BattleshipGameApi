@@ -1,5 +1,6 @@
 const dbGame = []
 const idHelper = require('./IdHelper.js')
+const GameBd = require('.././server/model.js')
 
 class Game {
 	constructor({cols = 10, rows = 10} = {}){
@@ -14,7 +15,15 @@ class Game {
 		game.token = token
 		dbGame.push(game);
 		game.session = `http://localhost:3000/game?token=${token}`;
-
+		GameBd.sync()
+		  .then(() => Game.create({
+		    gameId: game.id,
+		    token: game.token,
+		    session: game.session
+		  }))
+		  .then(game => {
+		    console.log(game.toJSON());
+		  });
 		return Promise.resolve({
 			id : game.id, 
 			session : game.session,

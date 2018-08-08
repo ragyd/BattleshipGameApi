@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize'),
 	sequelize = new Sequelize('battleship', 'sa', 'Admin2018', {
 		host: 'localhost',
-		dialect: 'mssql'
+		dialect: 'mssql',
 		pool: {
 			max: 5,
 			min: 0,

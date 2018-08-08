@@ -1,24 +1,30 @@
-var Sequelize = require('sequelize'),
-	connection = require('./conf');
+var Sequelize  = require('sequelize');
+var sequelize = new Sequelize('battleship', 'sa', 'Admin2018', {
+		host: 'localhost',
+		dialect: 'mssql',
+		pool: {
+			max: 5,
+			min: 0,
+	    acquire: 30000,
+	    idle: 10000
+		},
+		storage: './data.mssql'
+	});
 
-var Game = connection.config.db.define( 'game', {
-	gameId: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV1,
-    primaryKey: true,
-		field: 'game_id'
-  },
-	token: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV1,
-		field: 'token'
-  },
-	session: {
-		type: Sequelize.STRING,
-		field: 'session'
-	}
+
+var Game = sequelize.define('Game', {
+    gameId: {
+        type: Sequelize.INTEGER,
+        field: 'game_id'
+    },
+    token: {
+        type: Sequelize.STRING,
+        field: 'token'
+    },
+    session: {
+        type: Sequelize.STRING,
+        field: 'session'
+    }
 });
 
-exports.models = {
-	game: Game
-}
+module.exports = Game;
