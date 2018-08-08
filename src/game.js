@@ -16,13 +16,13 @@ class Game {
 		dbGame.push(game);
 		game.session = `http://localhost:3000/game?token=${token}`;
 		GameBd.sync()
-		  .then(() => Game.create({
+		  .then(() => GameBd.create({
 		    gameId: game.id,
 		    token: game.token,
 		    session: game.session
 		  }))
 		  .then(game => {
-		    console.log(game.toJSON());
+		    console.log(JSON.stringify(game));
 		  });
 		return Promise.resolve({
 			id : game.id, 
