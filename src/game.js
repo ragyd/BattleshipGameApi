@@ -14,23 +14,29 @@ class Game {
 		game.token = token
 		game.session = `http://localhost:3000/game?token=${token}`;
 		return GameBd.sync()
-		  .then(() => GameBd.create({
+			.then(() => GameBd.create({
 				token,
 				playerId1 : game.playerId
-		  }))
+			}))
 	}
 
 	static join(token) {
 		const game = GameBd.findAll(
-	    { where: { token: token }}
-	  )
+		{ 
+			where: { 
+				token: token 
+			}
+		})
 		if(game === undefined) {
 			return Promise.reject()
 		}
-		GameBd.update(
-	    { playerId2: idHelper() },
-	    { where: { token: token }}
-	  )
+		GameBd.update({ 
+				playerId2: idHelper() 
+			}, { 
+				where: { 
+					token: token 
+				}
+			})
 		return Promise.resolve(game);
 	}
 }
