@@ -15,8 +15,8 @@ const Game = connection.define('Game', {
     field: 'second_player_id'
   }
 },{
-		timestamps: false,
-		freezeTableName: true
+	timestamps: false,
+	freezeTableName: true
 });
 
 module.exports = Game;
