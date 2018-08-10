@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize'),
-	sequelize = new Sequelize('battleship', 'sa', 'Admin2018', {
+	connection = new Sequelize('Battleship', 'sa', 'Admin2018', {
 		host: 'localhost',
 		dialect: 'mssql',
 		pool: {
@@ -11,4 +11,4 @@ const Sequelize = require('sequelize'),
 		storage: './data.mssql'
 	});
 
-module.exports = sequelize;
+module.exports = connection;
