@@ -8,7 +8,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const Game = require('./src/Game.js')
-const connection = require('./database/Connection.js')
+//const connection = require('./database/ConnectionMSSQL.js')
+const connection = require('./database/ConnectionMySQL.js')
 
 app.get('/game',(req, res, next) => {
   Game.join(req.query.token)
@@ -26,14 +27,14 @@ app.post('/game', (req, res, next) => {
     .catch(error => console.error(error))
 })
 
-app.listen(3000, () => {
-  console.log('Example app listening on port 3000!')
-  connection
+connection
   .authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
+    app.listen(3000, () => {
+      console.log('Example app listening on port 3000!')      
+    })
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);
   })
-})

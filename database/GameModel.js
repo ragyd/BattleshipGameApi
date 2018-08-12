@@ -1,5 +1,6 @@
 const Sequelize  = require('sequelize');
-const connection = require('.././database/Connection.js')
+//const connection = require('.././database/ConnectionMSSQL.js')
+const connection = require('.././database/ConnectionMySQL.js')
 
 const Game = connection.define('Game', {
   token: {
