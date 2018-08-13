@@ -1,6 +1,6 @@
 const Sequelize  = require('sequelize');
-//const connection = require('.././database/ConnectionMSSQL.js')
-const connection = require('.././database/ConnectionMySQL.js')
+const connection = require('.././database/ConnectionMSSQL.js')
+
 const GameDB = require('.././database/GameModel.js')
 
 const Board = connection.define('Board', {

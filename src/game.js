@@ -26,13 +26,15 @@ class Game {
         return "The game could't be created in database, either could the board."
       }
         BoardBd.sync()
+        .then(() => {
           BoardBd.create({
             rows,
             cols,
             gameId: gameModel.dataValues.id
           })
-        return `The game and board were created. Use this link to invite another player to join: 
-          <a href="${game.session}>" ${game.session}</a>`
+        })
+        gameModel.dataValues.session = game.session
+        return gameModel.dataValues
       })
       .catch(error => {
         console.log(error)
@@ -41,17 +43,19 @@ class Game {
   }
 
   static join(token) {
-    return GameBd.sync()
-      .then(() => {
-        return GameBd.findOne({ where: { token } })
-      })
+    return GameBd.findOne({ where: { token } })
       .then((gameModel) => {
       if(gameModel === null) {
         return "The link of the session doesn't exist."
-      }      
-      GameBd.update(
-        { playerId2: idHelper() }, 
-        { where: { token } })
+      }
+      const playerId2 = idHelper()
+      GameBd.sync()
+      .then(() => {
+        return GameBd.update(
+          { playerId2 }, 
+          { where: { token } })
+      })
+      gameModel.dataValues.playerId2 = playerId2
       return gameModel.dataValues
     })
   }

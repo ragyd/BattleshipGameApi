@@ -1,12 +1,11 @@
 const Sequelize  = require('sequelize');
-//const connection = require('.././database/ConnectionMSSQL.js')
-const connection = require('.././database/ConnectionMySQL.js')
+const connection = require('.././database/ConnectionMSSQL.js')
 
 const Game = connection.define('Game', {
     token: {
       type: Sequelize.STRING,
       field: 'token',
-      allowNull: false      
+      allowNull: false   
     },
     playerId1: {
       type: Sequelize.STRING,

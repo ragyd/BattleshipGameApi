@@ -1,7 +1,9 @@
 const Sequelize  = require('sequelize');
+
 const GameBd = require('.././database/GameModel.js')
 const PositionShipBd = require('.././database/PositionShip.js')
 const BoardBd = require('.././database/BoardModel.js')
+const ShipBd = require('.././database/ShipModel.js')
 
 const valueMaxOfShips = 6
 
@@ -32,11 +34,24 @@ class ShipPosition {
         const cols = boardModel.dataValues.cols - 1
         const rows = boardModel.dataValues.rows - 1
 
-        const valueIsBiggerThanBoard = shipPositions.some(ship => {
-          return ship.positionX > cols || ship.positionY > rows
-        });
+        const valueIsOutsideOfBoard = shipPositions.some(ship => {
+          ship.sizeShip = ship.type
+          if(ship.type === 1) {
+            ship.sizeShip = 2
+          }
 
-        if(valueIsBiggerThanBoard) {
+          if(ship.type === 2) {
+            ship.sizeShip = 3
+          }
+
+          if(ship.orientation === 'h')  {
+            return parseInt(ship.positionX + ship.sizeShip) > cols || ship.positionY > rows
+          }
+          return ship.positionX > cols || parseInt(ship.positionY + ship.sizeShip) > rows          
+          
+        })
+
+        if(valueIsOutsideOfBoard) {
           return "One or more ship position is outside of the board."
         }
 
@@ -46,8 +61,10 @@ class ShipPosition {
         });
 
         PositionShipBd.sync()
-        PositionShipBd.bulkCreate(shipPositions)
-        return `The ships were positioned in the board.`
+        .then(() => {
+          PositionShipBd.bulkCreate(shipPositions)
+        })
+          return `The ships were positioned in the board.`        
       })
     })
     .catch(error => {

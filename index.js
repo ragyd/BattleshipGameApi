@@ -9,8 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const Game = require('./src/Game.js')
 const ShipPosition = require('./src/ShipPosition.js')
-//const connection = require('./database/ConnectionMSSQL.js')
-const connection = require('./database/ConnectionMySQL.js')
+const connection = require('./database/ConnectionMSSQL.js')
 const ShipTypeBd = require('./database/ShipModel.js')
 
 app.get('/game',(req, res, next) => {
@@ -49,16 +48,16 @@ connection
       console.log('Example app listening on port 3000!')      
     })
     ShipTypeBd.sync()
+    ShipTypeBd.destroy({
+      truncate: true
+    })
     ShipTypeBd.bulkCreate([
       { id: 1, name: 'Destroyer', size: 2 },
       { id: 2, name: 'Submarine', size: 3 },
       { id: 3, name: 'Cruiser', size: 3 },
       { id: 4, name: 'Battleship', size: 4 },
       { id: 5, name: 'Carrier', size: 5 }
-    ],
-    {
-      updateOnDuplicate: true,
-    })
+    ])
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);

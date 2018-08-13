@@ -1,25 +1,29 @@
 const Sequelize  = require('sequelize');
-//const connection = require('.././database/ConnectionMSSQL.js')
-const connection = require('.././database/ConnectionMySQL.js')
+const connection = require('.././database/ConnectionMSSQL.js')
+
 const ShipDB = require('.././database/ShipModel.js')
 const GameDB = require('.././database/GameModel.js')
 
 const PositionShip = connection.define('PositionShip', {
     positionX: {
       type: Sequelize.STRING,
-      field: 'position_x'
+      field: 'position_x',
+      allowNull: false
     },
     positionY: {
       type: Sequelize.INTEGER,
-      field: 'position_y'
+      field: 'position_y',
+      allowNull: false
     },
     orientation: {
       type: Sequelize.CHAR,
-      field: 'orientation'
+      field: 'orientation',
+      allowNull: false
     },
     type: {
       type: Sequelize.INTEGER,
       field: 'type',
+      allowNull: false,
       references: {
         model: ShipDB,
         key: 'id'
@@ -28,6 +32,7 @@ const PositionShip = connection.define('PositionShip', {
     gameId: {
       type: Sequelize.INTEGER,
       field: 'game_id',
+      allowNull: false,
       references: {
         model: GameDB,
         key: 'id'
@@ -35,7 +40,8 @@ const PositionShip = connection.define('PositionShip', {
     },
     playerId: {
       type: Sequelize.STRING,
-      field: 'player_id'
+      field: 'player_id',
+      allowNull: false
     }
   },
   {
