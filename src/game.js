@@ -42,13 +42,11 @@ class Game {
         throw "The link of the session doesn't exist."
       }
       const playerId2 = idHelper()
-      GameBd.sync()
-      .then(() => {
-        return GameBd.update({ playerId2 }, { where: { token } })
-      })
-      gameModel.dataValues.playerId2 = playerId2
-      return gameModel.dataValues
+      return GameBd.sync()
     })
+    .then(() => {
+      return GameBd.update({ playerId2 }, { where: { token } })
+    })    
   }
 }
 
