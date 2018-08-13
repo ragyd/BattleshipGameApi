@@ -17,27 +17,42 @@ app.get('/game',(req, res, next) => {
   .then(game => {
       res.send(game)
     })
-  .catch(error => console.error(error))
+  .catch(error => {
+   console.error(error)
+     res.status(400).send({
+         message: error
+    })
+  })
 })
 
 app.post('/game', (req, res, next) => {
   Game.create(req.body)
-    .then(game => {
-      res.send(game)
+  .then(game => {
+    res.send(game)
+  })
+  .catch(error => {
+   console.error(error)
+     res.status(400).send({
+         message: error
     })
-    .catch(error => console.error(error))
+  })
 })
 
 
-app.post('/game/:gameId/player/:playerId/ship-positions', (req, res, next) => {
+app.put('/game/:gameId/player/:playerId/board', (req, res, next) => {
   const gameId = req.params.gameId;
   const playerId = req.params.playerId;
   const shipPositions = req.body;  
   ShipPosition.create({gameId, playerId, shipPositions})
-    .then(shipPosition => {
-      res.send(shipPosition)
+  .then(shipPosition => {
+    res.send(shipPosition)
+  })
+  .catch(error => {
+   console.error(error)
+     res.status(400).send({
+         message: error
     })
-    .catch(error => console.error(error))
+  })
 })
 
 connection
@@ -48,16 +63,18 @@ connection
       console.log('Example app listening on port 3000!')      
     })
     ShipTypeBd.sync()
-    ShipTypeBd.destroy({
-      truncate: true
+    .then(() => {
+      ShipTypeBd.count().then(count => {
+        if(count === 0)
+        ShipTypeBd.bulkCreate([
+          { id: 1, name: 'Destroyer', size: 2 },
+          { id: 2, name: 'Submarine', size: 3 },
+          { id: 3, name: 'Cruiser', size: 3 },
+          { id: 4, name: 'Battleship', size: 4 },
+          { id: 5, name: 'Carrier', size: 5 }
+        ])
+      })
     })
-    ShipTypeBd.bulkCreate([
-      { id: 1, name: 'Destroyer', size: 2 },
-      { id: 2, name: 'Submarine', size: 3 },
-      { id: 3, name: 'Cruiser', size: 3 },
-      { id: 4, name: 'Battleship', size: 4 },
-      { id: 5, name: 'Carrier', size: 5 }
-    ])
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);

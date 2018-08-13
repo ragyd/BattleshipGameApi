@@ -15,49 +15,42 @@ class Game {
     game.token = token
     game.session = `http://localhost:3000/game?token=${token}`;
     return GameBd.sync()
-      .then(() => {
-        return GameBd.create({ token, playerId1 : game.playerId })
-      })
-      .then(() => {
-        return GameBd.findOne({ where: { token } })
-      })
-      .then((gameModel) => {
+    .then(() => {
+      return GameBd.create({ token, playerId1 : game.playerId })
+    })
+    .then((gameModel) => {
       if(gameModel === null) {
-        return "The game could't be created in database, either could the board."
+        throw "The game could't be created in database, either could the board."
       }
-        BoardBd.sync()
-        .then(() => {
-          BoardBd.create({
-            rows,
-            cols,
-            gameId: gameModel.dataValues.id
-          })
+      BoardBd.sync()
+      .then(() => {
+        BoardBd.create({
+          rows,
+          cols,
+          gameId: gameModel.dataValues.id
         })
-        gameModel.dataValues.session = game.session
-        return gameModel.dataValues
       })
-      .catch(error => {
-        console.log(error)
-        return "The game could't be created"
-      })
+      gameModel.dataValues.session = game.session
+      return gameModel.dataValues
+    })
   }
 
   static join(token) {
     return GameBd.findOne({ where: { token } })
       .then((gameModel) => {
-      if(gameModel === null) {
-        return "The link of the session doesn't exist."
-      }
-      const playerId2 = idHelper()
-      GameBd.sync()
-      .then(() => {
-        return GameBd.update(
-          { playerId2 }, 
-          { where: { token } })
+        if(gameModel === null) {
+          throw "The link of the session doesn't exist."
+        }
+        const playerId2 = idHelper()
+        GameBd.sync()
+        .then(() => {
+          return GameBd.update(
+            { playerId2 }, 
+            { where: { token } })
+        })
+        gameModel.dataValues.playerId2 = playerId2
+        return gameModel.dataValues
       })
-      gameModel.dataValues.playerId2 = playerId2
-      return gameModel.dataValues
-    })
   }
 }
 
