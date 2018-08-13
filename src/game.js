@@ -37,20 +37,18 @@ class Game {
 
   static join(token) {
     return GameBd.findOne({ where: { token } })
-      .then((gameModel) => {
-        if(gameModel === null) {
-          throw "The link of the session doesn't exist."
-        }
-        const playerId2 = idHelper()
-        GameBd.sync()
-        .then(() => {
-          return GameBd.update(
-            { playerId2 }, 
-            { where: { token } })
-        })
-        gameModel.dataValues.playerId2 = playerId2
-        return gameModel.dataValues
+    .then((gameModel) => {
+      if(gameModel === null) {
+        throw "The link of the session doesn't exist."
+      }
+      const playerId2 = idHelper()
+      GameBd.sync()
+      .then(() => {
+        return GameBd.update({ playerId2 }, { where: { token } })
       })
+      gameModel.dataValues.playerId2 = playerId2
+      return gameModel.dataValues
+    })
   }
 }
 

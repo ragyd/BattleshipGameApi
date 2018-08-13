@@ -5,7 +5,7 @@ const PositionShipBd = require('.././database/PositionShip.js')
 const BoardBd = require('.././database/BoardModel.js')
 const ShipBd = require('.././database/ShipModel.js')
 
-const valueMaxOfShips = 6
+const quantityOfShips = 6
 
 class ShipPosition {
   constructor({positionX = 0, positionY = 0, orientation = 'h', type = 1} = {}) {
@@ -25,30 +25,34 @@ class ShipPosition {
       if(gameModel === null) {
         throw "The ships could not be positioned because the Player does not exist in that game."
       }
-      if(shipPositions.length !== valueMaxOfShips) {
+
+      if(shipPositions.length !== quantityOfShips) {
         throw "The quantity of ships is not valid. It has to be 6 ships."
       }
-      return BoardBd.findOne({ where: { gameId } }) 
+
+      return BoardBd.findOne({ where: { gameId } })
       .then((boardModel) => {
         if(boardModel === null) {
           throw "The board does not exist."
         }
-        const cols = boardModel.dataValues.cols
-        const rows = boardModel.dataValues.rows
+
+        const cols = boardModel.dataValues.cols - 1
+        const rows = boardModel.dataValues.rows - 1
 
         const valueIsOutsideOfBoard = shipPositions.some(ship => {
-          ship.sizeShip = ship.type
+          ship.sizeShip = ship.type - 1
           if(ship.type === 1) {
-            ship.sizeShip = 2
+            ship.sizeShip = 1
           }
 
           if(ship.type === 2) {
-            ship.sizeShip = 3
+            ship.sizeShip = 2
           }
 
           if(ship.orientation === 'h')  {
             return parseInt(ship.positionX + ship.sizeShip) > cols || ship.positionY > rows
           }
+
           return ship.positionX > cols || parseInt(ship.positionY + ship.sizeShip) > rows          
         })
 
@@ -65,9 +69,10 @@ class ShipPosition {
         .then(() => {
           PositionShipBd.bulkCreate(shipPositions)
         })
-          return `The ships were positioned in the board.`        
+        return "The ships were positioned in the board."
       })
     })
   }
 }
+
 module.exports = ShipPosition

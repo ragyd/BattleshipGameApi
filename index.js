@@ -16,11 +16,11 @@ app.get('/game',(req, res, next) => {
   Game.join(req.query.token)
   .then(game => {
       res.send(game)
-    })
+  })
   .catch(error => {
    console.error(error)
-     res.status(400).send({
-         message: error
+    res.status(400).send({
+      message: error
     })
   })
 })
@@ -32,12 +32,11 @@ app.post('/game', (req, res, next) => {
   })
   .catch(error => {
    console.error(error)
-     res.status(400).send({
-         message: error
+    res.status(400).send({
+      message: error
     })
   })
 })
-
 
 app.put('/game/:gameId/player/:playerId/board', (req, res, next) => {
   const gameId = req.params.gameId;
