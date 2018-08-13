@@ -16,5 +16,4 @@ const Ship = connection.define('Ship', {
   	timestamps: false,
   	freezeTableName: true
   });
-
 module.exports = Ship;

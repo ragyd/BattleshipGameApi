@@ -16,8 +16,8 @@ class Game {
     game.session = `http://localhost:3000/game?token=${token}`;
     return GameBd.sync()
       .then(() => {
-          return GameBd.create({ token, playerId1 : game.playerId })
-        })
+        return GameBd.create({ token, playerId1 : game.playerId })
+      })
       .then(() => {
         return GameBd.findOne({ where: { token } })
       })
@@ -41,7 +41,6 @@ class Game {
   }
 
   static join(token) {
-    let message = "message by default"
     return GameBd.sync()
       .then(() => {
         return GameBd.findOne({ where: { token } })
