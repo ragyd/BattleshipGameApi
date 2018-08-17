@@ -18,8 +18,8 @@ class Game {
     .then(() => {
       return GameBd.create({ token, playerId1 : game.playerId })
     })
-    .then((gameModel) => {
-      if(gameModel === null) {
+    .then((gameCreated) => {
+      if(gameCreated === null) {
         throw "The game could't be created in database, either could the board."
       }
       BoardBd.sync()
@@ -27,26 +27,24 @@ class Game {
         BoardBd.create({
           rows,
           cols,
-          gameId: gameModel.dataValues.id
+          gameId: gameCreated.dataValues.id
         })
       })
-      gameModel.dataValues.session = game.session
-      return gameModel.dataValues
+      gameCreated.dataValues.session = game.session
+      return gameCreated.dataValues
     })
   }
 
   static join(token) {
     return GameBd.findOne({ where: { token } })
-    .then((gameModel) => {
-      if(gameModel === null) {
+    .then((gameFound) => {
+      if(gameFound === null) {
         throw "The link of the session doesn't exist."
       }
       const playerId2 = idHelper()
-      return GameBd.sync()
+      return gameFound.update({ playerId2 })
     })
-    .then(() => {
-      return GameBd.update({ playerId2 }, { where: { token } })
-    })    
+    .then(updatedGame => updatedGame.dataValues)
   }
 }
 

@@ -8,8 +8,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const Game = require('./src/Game.js')
-const ShipPosition = require('./src/ShipPosition.js')
-const connection = require('./database/ConnectionMSSQL.js')
+const BoardSetup = require('./src/BoardSetup.js')
+const connection = require('./database/ConnectionData.js')
 const ShipTypeBd = require('./database/ShipModel.js')
 
 app.get('/game',(req, res, next) => {
@@ -41,10 +41,10 @@ app.post('/game', (req, res, next) => {
 app.put('/game/:gameId/player/:playerId/board', (req, res, next) => {
   const gameId = req.params.gameId;
   const playerId = req.params.playerId;
-  const shipPositions = req.body;  
-  ShipPosition.create({gameId, playerId, shipPositions})
-  .then(shipPosition => {
-    res.send(shipPosition)
+  const boardSetup = req.body;  
+  BoardSetup.create({gameId, playerId, boardSetup})
+  .then(boardSetup => {
+    res.send(boardSetup)
   })
   .catch(error => {
    console.error(error)

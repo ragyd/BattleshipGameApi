@@ -1,13 +1,13 @@
 const Sequelize  = require('sequelize');
 
 const GameBd = require('.././database/GameModel.js')
-const PositionShipBd = require('.././database/PositionShipModel.js')
+const ShipLocationBd = require('.././database/ShipLocationModel.js')
 const BoardBd = require('.././database/BoardModel.js')
 const ShipBd = require('.././database/ShipModel.js')
 
 const totalShips = 5 
-//boarSetup
-class ShipPosition {
+
+class BoardSetup {
   constructor({positionX = 0, positionY = 0, orientation = 'h', type = 1} = {}) {
     this.positionX = positionX;
     this.positionY = positionY;
@@ -15,7 +15,7 @@ class ShipPosition {
     this.type = type;
   }
 
-  static create({gameId = 0, playerId = 0, shipPositions = []} = {}) {
+  static create({gameId = 0, playerId = 0, boardSetup = []} = {}) {
     const gamePromise = GameBd.findOne({ where: {
         id: gameId,
         [Sequelize.Op.or]: [{ playerId1: playerId }, { playerId2: playerId }]
@@ -28,7 +28,7 @@ class ShipPosition {
         throw "The ships could not be positioned because the Player does not exist in that game."
       }
 
-      if(shipPositions.length !== totalShips) {
+      if(boardSetup.length !== totalShips) {
         throw "The quantity of ships is not valid. It has to be "+ totalShips +" ships."
       }
 
@@ -36,10 +36,10 @@ class ShipPosition {
         throw "The board does not exist."
       }
 
-      const cols = boardModel.dataValues.cols - 1
-      const rows = boardModel.dataValues.rows - 1
+      const cols = boardModel.dataValues.cols
+      const rows = boardModel.dataValues.rows
 
-      const valueIsOutsideOfBoard = shipPositions.some(ship => {
+      const valueIsOutsideOfBoard = boardSetup.some(ship => {
         ship.sizeShip = ship.type - 1
         if(ship.type === 1) {
           ship.sizeShip = 1
@@ -50,27 +50,41 @@ class ShipPosition {
         }
 
         if(ship.orientation === 'h')  {
-          return parseInt(ship.positionX + ship.sizeShip) > cols || ship.positionY > rows
+          const colsSize = parseInt(ship.positionX + ship.sizeShip)
+          return colsSize > cols || colsSize < 1 || ship.positionY > rows || ship.positionX < 1
         }
-
-        return ship.positionX > cols || parseInt(ship.positionY + ship.sizeShip) > rows          
+        else {
+          if(ship.orientation === 'v') {
+            const rowsSize = parseInt(ship.positionY + ship.sizeShip)
+            return ship.positionX > cols || ship.positionX < 1 || rowsSize > rows || rowsSize < 1
+          }
+          else {
+            throw "The orientation '" + ship.orientation + "' of the ship has to be v - vertical or h - horizontal."
+          }
+        }        
       })
 
       if(valueIsOutsideOfBoard) {
         throw "One or more ship position is outside of the board."
       }
 
-      shipPositions.forEach(ship => {
+      boardSetup.forEach(ship => {
         ship.playerId = playerId
         ship.gameId = gameId
       });
 
-      return PositionShipBd.sync()
+      return ShipLocationBd.destroy({ where: { playerId } })
     })
     .then(() => {
-      return PositionShipBd.bulkCreate(shipPositions)
+      return ShipLocationBd.bulkCreate(boardSetup)
+    })
+    .then(() => {
+      return ShipLocationBd.findAll({ where: { playerId } })
+    })
+    .then(shipsLocation => {
+      return shipsLocation
     })
   }
 }
 
-module.exports = ShipPosition
+module.exports = BoardSetup

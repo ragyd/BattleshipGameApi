@@ -1,10 +1,10 @@
 const Sequelize  = require('sequelize');
-const connection = require('.././database/ConnectionMSSQL.js')
+const connection = require('.././database/ConnectionData.js')
 
 const ShipDB = require('.././database/ShipModel.js')
 const GameDB = require('.././database/GameModel.js')
 
-const PositionShip = connection.define('PositionShip', {
+const ShipLocation = connection.define('ShipLocation', {
     positionX: {
       type: Sequelize.STRING,
       field: 'position_x',
@@ -16,7 +16,7 @@ const PositionShip = connection.define('PositionShip', {
       allowNull: false
     },
     orientation: {
-      type: Sequelize.CHAR,
+      type: Sequelize.CHAR(1),
       field: 'orientation',
       allowNull: false
     },
@@ -49,4 +49,4 @@ const PositionShip = connection.define('PositionShip', {
   	freezeTableName: true
   });
 
-module.exports = PositionShip;
+module.exports = ShipLocation;
