@@ -51,7 +51,7 @@ class BoardSetup {
 
         if(ship.orientation === 'h')  {
           const colsSize = parseInt(ship.positionX + ship.sizeShip)
-          return colsSize > cols || colsSize < 1 || ship.positionY > rows || ship.positionX < 1
+          return colsSize > cols || colsSize < 1 || ship.positionY > rows || ship.positionY < 1
         }
         else {
           if(ship.orientation === 'v') {
